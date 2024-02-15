@@ -1,3 +1,11 @@
+import { initialCards } from './scripts/cards.js';
+import './pages/index.css';
+// import userPicture from './images/avatar.jpg';
+
+// const images = [
+//   { name: 'userPicture', link: userPicture }
+// ]
+
 const PLACES_LIST = document.querySelector(".places__list");
 
 function renderCard(imageLink, name, removeFunc) {
