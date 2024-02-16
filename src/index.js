@@ -1,18 +1,13 @@
-import { renderCard, removeCard, likedCard } from './components/card.js';
+import { renderCard, removeCard, likedCard, openPopupCard } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js';
-
-
 import { initialCards } from './scripts/cards.js';
+
 import './pages/index.css';
 
 
 const profileName = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 const placesList = document.querySelector(".places__list");
-
-const imagePopup = document.querySelector('.popup_type_image');
-const image = imagePopup.querySelector('.popup__image');
-const caption = imagePopup.querySelector('.popup__caption');
 
 const popupList = document.querySelectorAll('.popup');
 
@@ -35,6 +30,7 @@ addCardButton.addEventListener('click', () => openModal(addCardPopup));
 
 
 popupList.forEach(popup => {
+  popup.classList.add('popup_is-animated');
   const closePopupButton = popup.querySelector('.popup__close');
   const contentPopup = popup.querySelector('.popup__content');
 
@@ -49,16 +45,6 @@ popupList.forEach(popup => {
   });
 
   contentPopup.addEventListener('click', (event) => event.stopPropagation());
-})
-
-
-placesList.addEventListener('click', event => {
-  if (event.target.classList.contains('card__image')) {
-    image.setAttribute('src', event.target.getAttribute('src'));
-    caption.textContent = event.target.getAttribute('alt');
-
-    openModal(imagePopup);
-  }
 })
 
 editProfileForm.addEventListener('submit', handleFormEditSubmit);
@@ -79,7 +65,7 @@ function handleFormEditSubmit(evt) {
 function handleFormAddSubmit(evt) {
   evt.preventDefault();
   
-  const card = renderCard(addCardImageLink.value, addCardName.value, removeCard, likedCard);
+  const card = renderCard(addCardImageLink.value, addCardName.value, removeCard, likedCard, openPopupCard);
 
   placesList.insertAdjacentElement('afterbegin', card);
 
@@ -89,7 +75,7 @@ function handleFormAddSubmit(evt) {
 }
 
 function addCard(place) {
-  const card = renderCard(place.link, place.name, removeCard, likedCard);
+  const card = renderCard(place.link, place.name, removeCard, likedCard, openPopupCard);
 
   placesList.append(card);
 }

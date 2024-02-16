@@ -1,9 +1,9 @@
 function openModal(object) {
-  object.style.display = 'flex';
+  object.classList.add('popup_is-opened');
 }
 
 function closeModal(object) {
-  object.style.display = 'none';
+  object.classList.remove('popup_is-opened')
 }
 
 export { openModal, closeModal }
