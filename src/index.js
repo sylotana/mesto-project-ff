@@ -1,4 +1,5 @@
 import { initialCards } from './scripts/cards.js';
+import './scripts/popup.js';
 import './pages/index.css';
 // import userPicture from './images/avatar.jpg';
 
@@ -7,6 +8,22 @@ import './pages/index.css';
 // ]
 
 const PLACES_LIST = document.querySelector(".places__list");
+
+PLACES_LIST.addEventListener('click', event => {
+  const imagePopup = document.querySelector('.popup.popup_type_image');
+  const image = imagePopup.querySelector('.popup__image');
+  const caption = imagePopup.querySelector('.popup__caption');
+
+  if (event.target.classList.contains('card__image')) {
+    imagePopup.style.display = 'flex';
+
+    const targetImage = event.target.getAttribute('src'); 
+    const targetImageAlt = event.target.getAttribute('alt');
+
+    image.setAttribute('src', targetImage);
+    caption.textContent = targetImageAlt;
+  }
+})
 
 function renderCard(imageLink, name, removeFunc) {
   const cardTemplate = document.querySelector("#card-template").content;
