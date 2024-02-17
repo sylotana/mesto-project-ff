@@ -4,7 +4,6 @@ import { initialCards } from './components/cards.js';
 
 import './pages/index.css';
 
-// VARIABLES START
 
 const placesList = document.querySelector(".places__list");
 const popupList = document.querySelectorAll('.popup');
@@ -25,12 +24,6 @@ const addCardPopup = document.querySelector('.popup_type_new-card');
 const addCardForm = document.forms['new-place'];
 
 
-// VARIABLES END //
-
-
-
-// EVENTS START //
-
 editProfileButton.addEventListener('click', () => openModal(editProfilePopup));
 addCardButton.addEventListener('click', () => openModal(addCardPopup));
 
@@ -44,16 +37,15 @@ popupList.forEach(popup => {
 
   closePopupButton.addEventListener('click', () => closeModal(popup));
 
-  contentPopup.addEventListener('click', (event) => event.stopPropagation());
+  contentPopup.addEventListener('click', event => event.stopPropagation());
 })
 
 
-editProfileForm.addEventListener('submit', (event) => {
+editProfileForm.addEventListener('submit', event => {
   handleFormSubmit(event, () => {
     profileName.textContent = editProfileName.value;
     profileDescription.textContent = editProfileDescription.value;
   })
-
 });
 
 
@@ -61,7 +53,6 @@ addCardForm.addEventListener('submit', (event) => {
   handleFormSubmit(event, () => {
     const addCardName = addCardForm['place-name'];
     const addCardImageLink = addCardForm.link;
-
     const card = createObjectCard(addCardImageLink.value, addCardName.value);
     placesList.insertAdjacentElement('afterbegin', createCard(card))
   })
@@ -70,21 +61,17 @@ addCardForm.addEventListener('submit', (event) => {
 });
 
 
-// EVENTS END //
-
 initialCards.forEach(elem => {
   placesList.append(createCard(elem));
 });
 
 
-// FUNCTIONS START
-
-function handleFormSubmit(form, collback) {
+function handleFormSubmit(form, callback) {
   form.preventDefault();
 
-  collback();
+  callback();
 
-
+  closeModal(form.target.closest('.popup'))
 }
 
 
@@ -94,6 +81,7 @@ function createCard(object) {
 
   return card;
 }
+
 
 function createObjectCard(imageLink, name) {
   return {
@@ -112,6 +100,3 @@ function openPopupCard(popup) {
   
   openModal(imagePopup);
 }
-
-
-// FUNCTIONS END
