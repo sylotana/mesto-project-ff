@@ -24,19 +24,7 @@ function removeCard(event) {
 }
 
 function likedCard(event) {
-  event.target.classList.add('card__like-button_is-active');
+  event.target.classList.toggle('card__like-button_is-active');
 }
 
-function openPopupCard(event) {
-  const imagePopup = document.querySelector('.popup_type_image');
-  const image = imagePopup.querySelector('.popup__image');
-  const caption = imagePopup.querySelector('.popup__caption');
-  
-  image.setAttribute('src', event.target.getAttribute('src'));
-  caption.textContent = event.target.getAttribute('alt');
-  
-  imagePopup.classList.add('popup_is-opened');
-}
-
-
-export { renderCard, removeCard, likedCard, openPopupCard }
+export { renderCard, removeCard, likedCard }
