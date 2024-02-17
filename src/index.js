@@ -4,7 +4,6 @@ import { initialCards } from './components/cards.js';
 
 import './pages/index.css';
 
-
 const placesList = document.querySelector(".places__list");
 const popupList = document.querySelectorAll('.popup');
 
@@ -14,19 +13,21 @@ const profileDescription = document.querySelector('.profile__description');
 const editProfileButton = document.querySelector('.profile__edit-button');
 const editProfilePopup = document.querySelector('.popup_type_edit');
 const editProfileForm = document.forms['edit-profile'];
-const editProfileName = editProfileForm.name;
-const editProfileDescription = editProfileForm.description;
-editProfileName.value = profileName.textContent;
-editProfileDescription.value = profileDescription.textContent;
 
 const addCardButton = document.querySelector('.profile__add-button');
 const addCardPopup = document.querySelector('.popup_type_new-card');
 const addCardForm = document.forms['new-place'];
 
+const imagePopup = document.querySelector('.popup_type_image');
+const image = imagePopup.querySelector('.popup__image');
+const caption = imagePopup.querySelector('.popup__caption');
 
-editProfileButton.addEventListener('click', () => openModal(editProfilePopup));
-addCardButton.addEventListener('click', () => openModal(addCardPopup));
+initialCards.forEach(elem => {
+  placesList.append(createCard(elem));
+});
 
+editProfileButton.addEventListener('click', () => openEditProfilePopup(editProfilePopup));
+addCardButton.addEventListener('click', () => openAddCardPopup(addCardPopup));
 
 popupList.forEach(popup => {
   popup.classList.add('popup_is-animated');
@@ -41,62 +42,58 @@ popupList.forEach(popup => {
 })
 
 
-editProfileForm.addEventListener('submit', event => {
-  handleFormSubmit(event, () => {
-    profileName.textContent = editProfileName.value;
-    profileDescription.textContent = editProfileDescription.value;
-  })
-});
+editProfileForm.addEventListener('submit', handleFormEditProfileSubmit);
+
+addCardForm.addEventListener('submit', handleFormAddCardSubmit);
 
 
-addCardForm.addEventListener('submit', (event) => {
-  handleFormSubmit(event, () => {
-    const addCardName = addCardForm['place-name'];
-    const addCardImageLink = addCardForm.link;
-    const card = createObjectCard(addCardImageLink.value, addCardName.value);
-    placesList.insertAdjacentElement('afterbegin', createCard(card))
-  })
-  
-  event.target.reset();
-});
-
-
-initialCards.forEach(elem => {
-  placesList.append(createCard(elem));
-});
-
-
-function handleFormSubmit(form, callback) {
+function handleFormEditProfileSubmit(form) {
   form.preventDefault();
 
-  callback();
+  profileName.textContent = form.target.name.value;
+  profileDescription.textContent = form.target.description.value;
 
-  closeModal(form.target.closest('.popup'))
+  closeModal(form.target.closest('.popup'));
 }
 
+function handleFormAddCardSubmit(form) {
+  form.preventDefault();
 
-function createCard(object) {
-  const cardFunctions = [ removeCard, likedCard, openPopupCard ];
-  const card = renderCard(object.link, object.name, ...cardFunctions);
+  placesList.prepend(createCard({
+    name: form.target['place-name'].value,
+    link: form.target.link.value
+  }));
 
-  return card;
+  closeModal(form.target.closest('.popup'));
 }
 
-
-function createObjectCard(imageLink, name) {
-  return {
-    name: name,
-    link: imageLink
-  }
+function createCard(card) {
+  const func = { removeCard, likedCard, openPopupCard }
+  
+  return renderCard({
+    name: card.name,
+    imageLink: card.link,
+    func
+  }); 
 }
 
-
-function openPopupCard(popup) {
-  const imagePopup = document.querySelector('.popup_type_image');
-  const image = imagePopup.querySelector('.popup__image');
-  const caption = imagePopup.querySelector('.popup__caption');
-  image.setAttribute('src', popup.target.getAttribute('src'));
-  caption.textContent = popup.target.getAttribute('alt');
+function openPopupCard({ name, imageLink }) {
+  image.setAttribute('src', imageLink);
+  image.setAttribute('alt', name);
+  caption.textContent = name;
   
   openModal(imagePopup);
+}
+
+function openEditProfilePopup(popup) {
+  editProfileForm.name.value = profileName.textContent;
+  editProfileForm.description.value = profileDescription.textContent;
+
+  openModal(popup);
+}
+
+function openAddCardPopup(popup) {
+  addCardForm.reset();
+
+  openModal(popup);
 }

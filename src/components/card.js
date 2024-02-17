@@ -1,4 +1,4 @@
-function renderCard(imageLink, name, removeFunc, likedFunc, openPopapFunc) {
+function renderCard({ name, imageLink, func }) {
   const cardTemplate = document.querySelector('#card-template').content;
 
   const card = cardTemplate.querySelector('.card').cloneNode(true);
@@ -7,20 +7,19 @@ function renderCard(imageLink, name, removeFunc, likedFunc, openPopapFunc) {
   const cardRemoveButton = card.querySelector('.card__delete-button');
   const cardLikeButton = card.querySelector('.card__like-button');
 
+  cardTitle.textContent = name;
   cardImage.src = imageLink;
   cardImage.alt = name;
-  cardTitle.textContent = name;
 
-  cardRemoveButton.addEventListener('click', removeFunc);
-  cardLikeButton.addEventListener('click', likedFunc);
-  cardImage.addEventListener('click', openPopapFunc);
+  cardRemoveButton.addEventListener('click', func.removeCard);
+  cardLikeButton.addEventListener('click', func.likedCard);
+  cardImage.addEventListener('click', () => func.openPopupCard({ name, imageLink }));
 
   return card;
 }
 
 function removeCard(event) {
-  const card = event.target.closest('.card');
-  card.remove();
+  event.target.closest('.card').remove();
 }
 
 function likedCard(event) {
