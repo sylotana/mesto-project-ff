@@ -26,8 +26,8 @@ initialCards.forEach(elem => {
   placesList.append(createCard(elem));
 });
 
-editProfileButton.addEventListener('click', () => openEditProfilePopup(editProfilePopup));
-addCardButton.addEventListener('click', () => openAddCardPopup(addCardPopup));
+editProfileButton.addEventListener('click', openEditProfilePopup);
+addCardButton.addEventListener('click', openAddCardPopup);
 
 popupList.forEach(popup => {
   popup.classList.add('popup_is-animated');
@@ -47,24 +47,24 @@ editProfileForm.addEventListener('submit', handleFormEditProfileSubmit);
 addCardForm.addEventListener('submit', handleFormAddCardSubmit);
 
 
-function handleFormEditProfileSubmit(form) {
-  form.preventDefault();
+function handleFormEditProfileSubmit(event) {
+  event.preventDefault();
 
-  profileName.textContent = form.target.name.value;
-  profileDescription.textContent = form.target.description.value;
+  profileName.textContent = editProfileForm.name.value;
+  profileDescription.textContent = editProfileForm.description.value;
 
-  closeModal(form.target.closest('.popup'));
+  closeModal(editProfilePopup);
 }
 
-function handleFormAddCardSubmit(form) {
-  form.preventDefault();
+function handleFormAddCardSubmit(event) {
+  event.preventDefault();
 
   placesList.prepend(createCard({
-    name: form.target['place-name'].value,
-    link: form.target.link.value
+    name: addCardForm['place-name'].value,
+    link: addCardForm.link.value
   }));
 
-  closeModal(form.target.closest('.popup'));
+  closeModal(addCardPopup);
 }
 
 function createCard(card) {
@@ -85,15 +85,15 @@ function openPopupCard({ name, imageLink }) {
   openModal(imagePopup);
 }
 
-function openEditProfilePopup(popup) {
+function openEditProfilePopup() {
   editProfileForm.name.value = profileName.textContent;
   editProfileForm.description.value = profileDescription.textContent;
 
-  openModal(popup);
+  openModal(editProfilePopup);
 }
 
-function openAddCardPopup(popup) {
+function openAddCardPopup() {
   addCardForm.reset();
 
-  openModal(popup);
+  openModal(addCardPopup);
 }
