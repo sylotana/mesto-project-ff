@@ -1,7 +1,8 @@
 import { renderCard, removeCard, likedCard } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js';
 import { initialCards } from './components/cards.js';
-
+// import { setElementListeners } from './components/validation.js';
+import './components/validation.js';
 import './pages/index.css';
 
 const placesList = document.querySelector(".places__list");
@@ -97,3 +98,7 @@ function openAddCardPopup() {
 
   openModal(addCardPopup);
 }
+
+// VALIDATION
+
+// editProfileForm.addEventListener('input', isValid);
