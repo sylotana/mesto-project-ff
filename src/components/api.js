@@ -22,8 +22,16 @@ function request(path, method = 'GET', requestInfo = {}) {
     headers: config.headers,
     ...requestInfo
   })
-  .then(res => getResponse(res))
-  .then(data => data);
+  .then(res => getResponse(res));
+}
+
+function getInitialCards() {
+  return request('cards');
+}
+
+
+function getProfileData() {
+  return request('users/me');
 }
 
 
@@ -33,9 +41,6 @@ function editProfile(profileName, profileAbout) {
       name: profileName,
       about: profileAbout
     })
-  })
-  .catch(err => {
-    console.log(err);
   })
 }
 
@@ -47,33 +52,21 @@ function createNewCard(cardName, cardLink) {
       link: cardLink
     })
   })
-  .catch(err => {
-    console.log(err);
-  })
 }
 
 
 function deleteCard(cardId){
   return request(`cards/${cardId}`, 'DELETE')
-  .catch(err => {
-    console.log(err);
-  })
 }
 
 
 function addLikeCard(cardId) {
   return request(`cards/likes/${cardId}`, 'PUT')
-  .catch(err => {
-    console.log(err);
-  })
 }
 
 
 function removeLikeCard(cardId) {
   return request(`cards/likes/${cardId}`, 'DELETE')
-  .catch(err => {
-    console.log(err);
-  })
 }
 
 
@@ -83,9 +76,6 @@ function updateProfileImage(imageUrl) {
       avatar: imageUrl
     })
   })
-  .catch(err => {
-    console.log(err);
-  })
 }
 
-export { request, editProfile, createNewCard, addLikeCard, removeLikeCard, updateProfileImage, deleteCard }
+export { getInitialCards, getProfileData, editProfile, createNewCard, addLikeCard, removeLikeCard, updateProfileImage, deleteCard }

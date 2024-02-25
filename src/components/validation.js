@@ -69,14 +69,14 @@ function toggleButtonState(inputList, buttonElement, config) {
   }
 }
 
-// TODO: доделать валидацию
-function clearValidation(profileForm, config) {
-  const inputList = Array.from(profileForm.querySelectorAll(config.inputSelector));
-  const buttonElement = profileForm.querySelector(config.submitButtonSelector);
+function clearValidation(formElement, config) {
+  const inputList = Array.from(formElement.querySelectorAll(config.inputSelector));
+  const buttonElement = formElement.querySelector(config.submitButtonSelector);
 
+  formElement.reset()
+  toggleButtonState(inputList, buttonElement, config);
   inputList.forEach((inputElement) => {
-    toggleButtonState(inputList, buttonElement, config);
-    hideInputError(profileForm, inputElement, config);
+    hideInputError(formElement, inputElement, config);
   })
 }
 

@@ -1,6 +1,6 @@
 import { addLikeCard, removeLikeCard, deleteCard } from './api.js'
 
-function renderCard({ cardObject, userId, func }) {
+function generateCard({ cardObject, userId, functionList }) {
   const cardTemplate = document.querySelector('#card-template').content;
 
   const removeButton = document.createElement('button')
@@ -20,53 +20,57 @@ function renderCard({ cardObject, userId, func }) {
 
   if (isLiked) {
     cardLikeButton.classList.add('card__like-button_is-active');
-    
   }
 
-  if(isOwner) {
+  if (isOwner) {
     card.append(removeButton)
-    removeButton.addEventListener('click', func.removeCard);
+    removeButton.addEventListener('click', functionList.removeCard);
   }
-
-
 
   cardTitle.textContent = cardObject.name;
   cardImage.src = cardObject.link;
   cardImage.alt = cardObject.name;
   cardLikeCounter.textContent = cardObject.likes.length;
-
   cardLikeButton.addEventListener('click', (event) => {
-    if (isLiked) {
-      removeLikeCard(card.dataset.id)
-        .then(data => {
-          event.target.classList.remove('card__like-button_is-active')
-          cardLikeCounter.textContent = data.likes.length;
-          isLiked = false;
-        })
-        .catch(err => {
-          console.log(err);
-        })      
-    } else {
-      addLikeCard(card.dataset.id)
-      .then(data => {
-        event.target.classList.add('card__like-button_is-active')
-        cardLikeCounter.textContent = data.likes.length;
-        isLiked = true;
+    functionList.likedCard(event, card, cardLikeCounter, isLiked)
+      .then(result => {
+        isLiked = result;
       })
       .catch(err => {
         console.log(err);
-      })    
-    }
-    event.target.classList.toggle('card__like-button_is-active');
+      });
   });
-  cardImage.addEventListener('click', () => func.openPopupCard(cardObject.name, cardObject.link));
+  cardImage.addEventListener('click', () => functionList.openPopupCard(cardObject.name, cardObject.link));
 
   return card;
 }
 
 function removeCard(event) {
   deleteCard(event.target.closest('.card').dataset.id)
-  event.target.closest('.card').remove();
+    .then(() => {
+      event.target.closest('.card').remove();
+    })
+    .catch(err => {
+      console.log(err);
+    });  
 }
 
-export { renderCard, removeCard }
+
+
+function likedCard(event, cardElement, likeCounter, likeState) {
+  const likeMethod = likeState ? removeLikeCard : addLikeCard;
+  
+  return likeMethod(cardElement.dataset.id)
+    .then(data => {
+        event.target.classList.toggle('card__like-button_is-active');
+        likeCounter.textContent = data.likes.length;
+        return likeState = !likeState;
+      })
+    .catch(err => {
+        console.log(err);
+    })  
+   
+}
+
+
+export { generateCard, removeCard, likedCard }

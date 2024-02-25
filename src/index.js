@@ -1,8 +1,8 @@
-import { renderCard, removeCard } from './components/card.js';
+import { generateCard, removeCard, likedCard } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js';
 
 import { enableValidation, clearValidation } from './components/validation.js';
-import { request, editProfile, createNewCard, updateProfileImage } from './components/api.js';
+import { getInitialCards, getProfileData, editProfile, createNewCard, updateProfileImage } from './components/api.js';
 import './pages/index.css';
 
 const validationConfig = {
@@ -17,8 +17,14 @@ const validationConfig = {
 enableValidation(validationConfig)
 
 Promise.all([
-  request('users/me'),
-  request('cards')
+  getProfileData()
+    .catch(err => {
+      console.log(err)
+    }),
+  getInitialCards()
+    .catch(err => {
+      console.log(err)
+    })
 ])
   .then(([user, cards]) => {
     currentAvatar = user.avatar;
@@ -94,20 +100,20 @@ function handleFormEditProfileSubmit(event) {
 
   renderLoading(true, editProfileForm.querySelector('.popup__button'));
 
-
   editProfile(editProfileForm.name.value, editProfileForm.description.value)
-  .catch((err) => {
-    console.log(err);
-  })
-  .finally(() => {
-    renderLoading(
-      false,
-      editProfileForm.querySelector('.popup__button')
-    );
-  });
-  
-  profileName.textContent = editProfileForm.name.value;
-  profileDescription.textContent = editProfileForm.description.value;
+    .then(data => {
+      profileName.textContent = data.name;
+      profileDescription.textContent = data.about;
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      renderLoading(
+        false,
+        editProfileForm.querySelector('.popup__button')
+      );
+    });
 
   closeModal(editProfilePopup);
 }
@@ -118,16 +124,18 @@ function handleFormEditProfileImageSubmit(event) {
   renderLoading(true, editProfileImageForm.querySelector('.popup__button'));
 
   updateProfileImage(editProfileImageForm['profile-link'].value)
-  .catch((err) => {
-    console.log(err);
-  })
-  .finally(() => {
-    renderLoading(
-      false,
-      editProfileImageForm.querySelector('.popup__button')
-    );
-  });
-  editProfileImageButton.style.backgroundImage = `url(${editProfileImageForm['profile-link'].value})`;
+    .then(data => {
+      editProfileImageButton.style.backgroundImage = `url(${data.avatar})`
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      renderLoading(
+        false,
+        editProfileImageForm.querySelector('.popup__button')
+      );
+    });
 
   closeModal(editProfileImagePopup); 
 }
@@ -156,12 +164,12 @@ function handleFormAddCardSubmit(event) {
 }
 
 function createCard(card, userId) {
-  const func = { removeCard, openPopupCard }
+  const functionList = { openPopupCard, removeCard, likedCard }
   
-  return renderCard({
+  return generateCard({
     cardObject: card,
     userId: userId,
-    func
+    functionList
   }); 
 }
 
