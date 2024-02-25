@@ -10,11 +10,25 @@
   margin-bottom: 10px;
 }
 
+.popup__input:focus-visible{
+  outline: none;
+}
+
+.popup__input:not(.popup__input_type_error):focus-visible{
+  outline: none;
+  border-bottom-color: black;
+}
+
 .popup__input_type_error {
   border-bottom-color: red;
 }
 
 .popup__input-error {
+
+  color: #ff0000;
+  margin-top: 5px;
+  font-size: 12px;
+  line-height: 15px;
   display: none;
 }
 
